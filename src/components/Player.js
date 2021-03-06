@@ -1,5 +1,6 @@
 import React from 'react';
 import drawAudio from './AudioAnalyzer.js';
+import { API_BASE_URL, ACCESS_TOKEN_NAME, CURRENT_SONG } from '../constants/apiConstants';
 
 class Player extends React.Component {
     constructor(props) {
@@ -11,7 +12,7 @@ class Player extends React.Component {
     }
 
     componentDidMount() {
-        this.audioData = Promise.resolve(drawAudio(this.props.currentUrl));
+        this.audioData = Promise.resolve(drawAudio(localStorage.getItem(CURRENT_SONG)));
     }
 
     onTimeUpdateHandler = () => {
