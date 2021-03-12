@@ -1,4 +1,5 @@
 import React from 'react';
+import './Visualizer.css';
 
 class Visualizer extends React.Component {
     constructor(props) {
@@ -7,8 +8,8 @@ class Visualizer extends React.Component {
     //       <img src={process.env.PUBLIC_URL + '/sky.jpg'}></img>
     render() {
       return (
-        <div>
-        </div>
+        <canvas id = "visualizer">
+        </canvas>
       )
     }
   }
