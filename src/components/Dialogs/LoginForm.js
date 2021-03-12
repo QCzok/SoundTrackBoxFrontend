@@ -14,6 +14,7 @@ function LoginForm(props) {
         successMessage: null,
         errorMessage: null,
     })
+
     const handleChange = (e) => {
         const { id, value } = e.target
         setState(prevState => ({
@@ -22,36 +23,44 @@ function LoginForm(props) {
         }))
     }
 
+    const loginPost = async (payload) => {
+        return axios.post(API_BASE_URL + '/user/login', payload)
+            .then(response => {
+                if (response.status < 400) {
+                    setState(prevState => ({
+                        ...prevState,
+                        'successMessage': 'Login successful. Redirecting to home page..'
+                    }))
+                    localStorage.setItem(ACCESS_TOKEN_NAME, response.data);
+                    redirectToHome();
+                }
+                else {
+                    setState(prevState => ({
+                        ...prevState,
+                        'errorMessage': response.data,
+                    }))
+                }
+            })
+            .catch(error => {
+                if (!error.response) {
+                    alert('NETWORK ERROR');
+                } else {
+                    setState(prevState => ({
+                        ...prevState,
+                        'errorMessage': error.response.data
+                    }))
+                }
+            });
+    }
+
     const handleSubmitClick = (e) => {
         e.preventDefault();
         const payload = {
             "email": state.email,
             "password": state.password,
         }
-        axios.post(API_BASE_URL + '/user/login', payload)
-            .then(function (response) {
-                if (response.status === 200) {
-                    setState(prevState => ({
-                        ...prevState,
-                        'successMessage': 'Login successful. Redirecting to home page..'
-                    }))
-                    localStorage.setItem(ACCESS_TOKEN_NAME, response.data);
-                    props.parentCallback();
-                    redirectToHome();
-                }
-                else if (response.code === 204) {
-                    props.registrationFormCallback("Username and password do not match");
-                }
-                else {
-                    props.registrationFormCallback("Username does not exists");
-                }
-            })
-            .catch(function (error) {
-                setState(prevState => ({
-                    ...prevState,
-                    'errorMessage': error.response.data
-                }))
-            });
+
+        Promise.resolve(loginPost(payload)).catch(error => console.log(error));
     }
 
     const redirectToHome = () => {
@@ -61,52 +70,52 @@ function LoginForm(props) {
         props.history.push('/register');
     }
     return (
-            <Modal show={true} onHide={() => redirectToHome()} animation={false}>
-                <Modal.Header closeButton>
-                    Login
+        <Modal show={true} onHide={() => redirectToHome()} animation={false}>
+            <Modal.Header closeButton>
+                Login
                 </Modal.Header>
-                <Modal.Body>
-                    <form>
-                        <div className="form-group text-left">
-                            <label >Email address</label>
-                            <input type="email"
-                                className="form-control"
-                                id="email"
-                                aria-describedby="emailHelp"
-                                placeholder="Enter email"
-                                value={state.email}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="form-group text-left">
-                            <label>Password</label>
-                            <input type="password"
-                                className="form-control"
-                                id="password"
-                                placeholder="Password"
-                                value={state.password}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="form-check">
-                        </div>
-                    </form>
-                    <Button
-                        type="submit"
-                        className="btn btn-primary"
-                        onClick={handleSubmitClick}
-                    >Submit</Button>
-                </Modal.Body>
-                <Modal.Footer>
-                    <div className="registerMessage">
-                        <span>Dont have an account? </span>
-                        <span className="loginText" onClick={() => redirectToRegister()}>Register</span>
+            <Modal.Body>
+                <form>
+                    <div className="form-group text-left">
+                        <label >Email address</label>
+                        <input type="email"
+                            className="form-control"
+                            id="email"
+                            aria-describedby="emailHelp"
+                            placeholder="Enter email"
+                            value={state.email}
+                            onChange={handleChange}
+                        />
                     </div>
-                    <div className="alertMessage" style={{ display: state.errorMessage ? 'block' : 'none' }} role="alert">
-                        {state.errorMessage}
+                    <div className="form-group text-left">
+                        <label>Password</label>
+                        <input type="password"
+                            className="form-control"
+                            id="password"
+                            placeholder="Password"
+                            value={state.password}
+                            onChange={handleChange}
+                        />
                     </div>
-                </Modal.Footer>
-            </Modal>
+                    <div className="form-check">
+                    </div>
+                </form>
+                <Button
+                    type="submit"
+                    className="btn btn-primary"
+                    onClick={handleSubmitClick}
+                >Submit</Button>
+            </Modal.Body>
+            <Modal.Footer>
+                <section className="registerMessage">
+                    <span>Dont have an account? </span>
+                    <button className="btn btn-primary" onClick={() => redirectToRegister()}>Register</button>
+                </section>
+                <section class={state.errorMessage ? "alert alert-danger": ""} role="alert">
+                {state.errorMessage}
+                </section>
+            </Modal.Footer>
+        </Modal>
     )
 }
 

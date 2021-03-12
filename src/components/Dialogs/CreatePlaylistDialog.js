@@ -1,5 +1,5 @@
 import React from 'react';
-
+import './CreatePlaylistDialog.css'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
@@ -43,6 +43,7 @@ class CreatePlaylistDialog extends React.Component {
     render() {
         return (
             <div>
+                <button id="add-playlist" type="button" class="btn btn-outline-dark" onClick={this.handleDialogOpen}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="26"
@@ -50,10 +51,11 @@ class CreatePlaylistDialog extends React.Component {
                     fill="currentColor"
                     className="bi bi-plus"
                     viewBox="0 0 16 16"
-                    onClick={this.handleDialogOpen}
                 >
                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                 </svg>
+                Add a new playlist
+                </button>
                 
                 <Modal show={this.state.open} onHide={this.handleDialogClose} animation={false}>
                 <Modal.Header closeButton>

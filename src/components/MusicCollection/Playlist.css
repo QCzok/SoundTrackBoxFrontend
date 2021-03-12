@@ -1,0 +1,24 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+#playlistBox{
+        display: flex;
+        background-color: #272b30 ;
+        color: white;
+}
+
+#playlistItem{
+    color: white;
+    flex: 1 1 100%;
+}
+
+#delete-playlist{
+    color: white
+
+}
+
+#add-song{
+    color: white;
+}

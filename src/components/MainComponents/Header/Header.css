@@ -1,0 +1,13 @@
+.navBar{
+    display: flex;
+}
+
+#app-name{
+    color: rgb(223, 145, 0);
+    font-size: xx-large;
+    font-family: 'Helvetica Neue';
+    font-weight: bold; 
+    letter-spacing: -1px; 
+    text-align: center;
+    margin: 10px 20px;
+}

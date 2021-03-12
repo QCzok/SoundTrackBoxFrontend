@@ -1,6 +1,6 @@
 import React from 'react';
+import './MusicCollection.css';
 import axios from 'axios';
-import ListGroup from 'react-bootstrap/ListGroup';
 import Playlist from './Playlist';
 import { API_BASE_URL, ACCESS_TOKEN_NAME } from '../../constants/apiConstants';
 
@@ -10,8 +10,7 @@ class MusicCollection extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            playlistCollection: [],
-            isLoaded: false,
+            playlistCollection: null,
         }
         this.onChangePlaylists = this.onChangePlaylists.bind(this);
         this.reloadCollection = this.reloadCollection.bind(this);
@@ -24,7 +23,7 @@ class MusicCollection extends React.Component {
     }
 
     onChangePlaylists(playlistName) {
-        var data = Promise.resolve()
+        Promise.resolve()
             .then(this.addPlaylistPost(playlistName).then(result => {
                 this.setState({
                     playlistCollection: result
@@ -59,44 +58,44 @@ class MusicCollection extends React.Component {
     }
 
     reloadCollection() {
-        var musicCollection = Promise.resolve(this.loadMusicCollectionGet());
-        musicCollection.then((collection) => {
+        Promise.resolve(this.loadMusicCollectionGet()).then((collection) => {
             this.setState({
-                isLoaded: true,
                 playlistCollection: collection
-            })
-        });
+            });
+        })
     }
 
     render() {
-
-        var isLoaded = this.state.isLoaded;
-        if (isLoaded) {
-
+        if (this.state.playlistCollection) {
             return (
-                <div><CreatePlaylistDialog parentCallback={this.onChangePlaylists}>
-                </CreatePlaylistDialog>
-                    <ListGroup>
-                        {
-                            this.state.playlistCollection['musicCollection'].map((playlist, index) => {
-                                return (
-                                    <ListGroup.Item key={index}>
-                                        <Playlist
-                                            playlistName={playlist.name}
-                                            songCollection={playlist.songList ? playlist.songList : []}
-                                            parentCallback={this.onSongChange}
-                                        >
-                                        </Playlist>
-                                    </ListGroup.Item>
-                                )
-                            })}
+                <section className='library'>
+                        <CreatePlaylistDialog parentCallback={this.onChangePlaylists} />
+                        <ul className="list-group collection">
+                            {
+                                this.state.playlistCollection['musicCollection'].map((playlist, index) => {
+                                    return (
+                                        <li id="frame" className="list-group-item" key={index}>
+                                            <Playlist
+                                                playlistName={playlist.name}
+                                                songCollection={playlist.songList ? playlist.songList : []}
+                                                parentCallback={this.onSongChange}
+                                                updateCurrentSong={this.props.updateCurrentSong}
+                                            >
+                                            </Playlist>
+                                        </li>
+                                    )
+                                })}
 
-                    </ListGroup>
-                </div>
+                        </ul>
+                </section>
             )
         } else {
             return (
-                <h1> is loading </h1>
+                <div className="d-flex justify-content-center">
+                    <div className="spinner-border" role="status">
+                        <span className="sr-only">Loading...</span>
+                    </div>
+                </div>
             )
         }
     }

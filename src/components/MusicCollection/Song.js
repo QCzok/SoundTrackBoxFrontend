@@ -1,16 +1,15 @@
 import React from 'react';
-import ListGroup from 'react-bootstrap/ListGroup';
+import './Song.css';
 import axios from 'axios';
-import { API_BASE_URL, ACCESS_TOKEN_NAME, CURRENT_SONG } from '../../constants/apiConstants';
+import { API_BASE_URL, ACCESS_TOKEN_NAME } from '../../constants/apiConstants';
+import Button from 'react-bootstrap/Button';
+import Cookies from 'universal-cookie';
 
 class Song extends React.Component {
     constructor(props) {
         super(props);
         this.deleteSong = this.deleteSong.bind(this);
-    }
-
-    onSelect = () => {
-        localStorage.setItem(CURRENT_SONG, this.props.songID);
+        this.handleOnClick = this.handleOnClick.bind(this);
     }
 
     deleteSong() {
@@ -18,7 +17,7 @@ class Song extends React.Component {
     }
 
     async deleteSongPost(playlistName, songName, songID) {
-        return axios.post(API_BASE_URL + '/media/deleteSong', { playlistName: playlistName, songName: songName, songID: songID}, { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME) } })
+        return axios.post(API_BASE_URL + '/media/deleteSong', { playlistName: playlistName, songName: songName, songID: songID }, { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME) } })
             .then(function (response) {
                 if (response.status === 200) {
                     return response.data.affected;
@@ -30,37 +29,30 @@ class Song extends React.Component {
             })
     }
 
+    handleOnClick() {
+        this.props.updateCurrentSong(this.props.songName, this.props.songID)
+    }
+
     render() {
         return (
-            <ListGroup.Item>
-                {this.props.songName}
-
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="26"
-                    height="26"
-                    fill="currentColor"
-                    className="bi bi-plus b-plain"
-                    viewBox="0 0 16 16"
-                    onClick={this.deleteSong}
-                >
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                </svg>
-
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="26"
-                    height="26"
-                    fill="currentColor"
-                    className="bi bi-plus b-plain"
-                    viewBox="0 0 16 16"
-                    onClick={this.onSelect}
-                >
-                     <path d="M6 10.117V5.883a.5.5 0 0 1 .757-.429l3.528 2.117a.5.5 0 0 1 0 .858l-3.528 2.117a.5.5 0 0 1-.757-.43z"/>
-                     <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
-                </svg>
-            </ListGroup.Item>
+            <section id="song-frame">
+                <div id="delete-song" className="nav-item dropdown">
+                    <a className="nav-link dropdown-toggle"
+                        href="#"
+                        id="navbarDropdownMenuLink"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-music-fill" viewBox="0 0 16 16">
+                            <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm-.5 4.11v1.8l-2.5.5v5.09c0 .495-.301.883-.662 1.123C7.974 12.866 7.499 13 7 13c-.5 0-.974-.134-1.338-.377-.36-.24-.662-.628-.662-1.123s.301-.883.662-1.123C6.026 10.134 6.501 10 7 10c.356 0 .7.068 1 .196V4.41a1 1 0 0 1 .804-.98l1.5-.3a1 1 0 0 1 1.196.98z" />
+                        </svg>
+                    </a>
+                    <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a className="dropdown-item" onClick={this.deleteSong}>Delete this song</a>
+                    </div>
+                </div>
+                <Button id="song-item" onClick={this.handleOnClick}>{this.props.songName}</Button>
+            </section>
         );
     }
 }
