@@ -21,11 +21,12 @@ class Playlist extends React.Component {
         this.deletePlaylist = this.deletePlaylist.bind(this);
     }
 
-    async addSongPost(playlistName, songName, selectedFile) {
+    async addSongPost(playlistName, playlistID, songName, selectedFile) {
 
         const data = new FormData()
-        data.append('songName', songName);
         data.append('playlistName', playlistName);
+        data.append('playlistID', playlistID);
+        data.append('songName', songName);
         data.append('track', selectedFile);
 
 
@@ -54,11 +55,11 @@ class Playlist extends React.Component {
             })
     }
 
-    handleUpload(songName, songUrl, selectedFile) {
+    handleUpload(songName, selectedFile) {
         this.setState({
             fetchInProgress: true
         });
-        Promise.resolve(this.addSongPost(this.props.playlistName, songName, selectedFile)).then((result) => this.props.parentCallback(result)).then(() => {
+        Promise.resolve(this.addSongPost(this.props.playlistName, this.props.playlistID, songName, selectedFile)).then((result) => this.props.parentCallback(result)).then(() => {
             this.setState({
                 fetchInProgress: false
             })
@@ -118,7 +119,7 @@ class Playlist extends React.Component {
                                         <Song
                                             playlistName={this.props.playlistName}
                                             songName={song.songName}
-                                            songID={song.songID}
+                                            songID={song._id}
                                             parentCallback={this.props.parentCallback}
                                             updateCurrentSong={
                                                 this.props.updateCurrentSong

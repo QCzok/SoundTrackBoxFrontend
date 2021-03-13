@@ -21,7 +21,7 @@ class App extends React.Component {
     return (
       <main className="main">
         <section className="visualizer">
-        <CookieConsent>This site uses cookies.</CookieConsent>
+          <CookieConsent>This site uses cookies.</CookieConsent>
           <Visualizer></Visualizer>
         </section>
         <section className="media-player">

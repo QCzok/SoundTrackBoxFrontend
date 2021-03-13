@@ -77,6 +77,7 @@ class MusicCollection extends React.Component {
                                         <li id="frame" className="list-group-item" key={index}>
                                             <Playlist
                                                 playlistName={playlist.name}
+                                                playlistID={playlist._id}
                                                 songCollection={playlist.songList ? playlist.songList : []}
                                                 parentCallback={this.onSongChange}
                                                 updateCurrentSong={this.props.updateCurrentSong}

@@ -1,5 +1,6 @@
 import React from 'react';
 import './Player.css';
+import {API_BASE_URL} from '../../constants/apiConstants'
 
 //https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/getFloatFrequencyData
 class Player extends React.Component {
@@ -28,7 +29,7 @@ class Player extends React.Component {
         const audioSourceNode = audioCtx.createMediaElementSource(audio);
 
         this.analyserNode = audioCtx.createAnalyser();
-        this.analyserNode.fftSize = 128;
+        this.analyserNode.fftSize = 1024;
         this.bufferLength = this.analyserNode.frequencyBinCount;
         this.dataArray = new Float32Array(this.bufferLength);
 
@@ -52,14 +53,14 @@ class Player extends React.Component {
         let posX = 0;
         for (let i = 0; i < this.bufferLength; i++) {
             const barHeight = (this.dataArray[i] + 140) * 2;
-            this.canvasCtx.fillStyle = 'rgb(' + Math.floor(barHeight + 100) + ', 50, 50)';
+            this.canvasCtx.fillStyle = 'rgb(52 , 58, 74)';
             this.canvasCtx.fillRect(posX, this.canvas.height - barHeight / 2, barWidth, barHeight / 2);
             posX += barWidth + 1;
         }
     }
 
     render() {
-        // {API_BASE_URL + '/media/getSongFile/?songID=' + this.props.currentSongID}
+        console.log(this.props.currentSongID)
         return (
             <div className="player">
                 <figcaption id="caption">{this.props.currentSongName}</figcaption>
@@ -67,7 +68,7 @@ class Player extends React.Component {
                     id="track"
                     controls
                     crossorigin="anonymous"
-                    src="https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3"
+                    src={API_BASE_URL + '/media/getSongFile?songID=' + this.props.currentSongID}
                 >
                     Your browser does not support the
               <code>audio</code> element.

@@ -43,7 +43,7 @@ class UploadDialog extends React.Component {
   };
 
   handleDialogSubmit = () => {
-    this.props.parentCallback(this.state.songName, this.state.songUrl, this.state.selectedFile);
+    this.props.parentCallback(this.state.songName, this.state.selectedFile);
 
     this.setState({
       open: false,
