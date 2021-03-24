@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 
 import Playlist from './Playlist';
 import CreatePlaylistDialog from '../Dialogs/CreatePlaylistDialog'
-import { API_BASE_URL, ACCESS_TOKEN_NAME } from '../../constants/apiConstants';
+import { addPlaylistPost, loadMusicCollectionGet } from '../../utils/network.js';
 
 
 const MusicCollection = (props) => {
@@ -41,26 +40,6 @@ const MusicCollection = (props) => {
                 </div>
             )
         })
-    }
-
-    const addPlaylistPost = async (playlistName) => {
-        return axios.post(API_BASE_URL + '/media/addPlaylist', { name: playlistName }, { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME) } })
-            .then(function (response) {
-                if (response.status === 200) {
-                    return response.data.affected;
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
-
-    const loadMusicCollectionGet = async () => {
-        var data = axios.get(API_BASE_URL + '/media/loadMusicCollection', { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME) } })
-            .then(res => { return res.data }).catch(function (error) {
-                console.log(error);
-            })
-        return data;
     }
 
     return (

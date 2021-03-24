@@ -6,15 +6,10 @@ import Form from 'react-bootstrap/Form';
 const UploadDialog = (props) => {
   const [open, setOpen] = useState(false);
   const [songName, setSongName] = useState("");
-  const [songUrl, setSongUrl] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleNameChange = (event) => {
     setSongName(event.target.value)
-  };
-
-  const handleUrlChange = (event) => {
-    setSongUrl(event.target.value);
   };
 
   const handleDialogOpen = () => {
@@ -24,7 +19,6 @@ const UploadDialog = (props) => {
   const handleDialogClose = () => {
     setOpen(false);
     setSongName("");
-    setSongUrl("");
   };
 
   const handleDialogSubmit = () => {
@@ -32,7 +26,6 @@ const UploadDialog = (props) => {
       props.parentCallback(songName, selectedFile);
       setOpen(false);
       setSongName("");
-      setSongUrl("");
     } else {
       alert("You didn't give your song any name");
     }

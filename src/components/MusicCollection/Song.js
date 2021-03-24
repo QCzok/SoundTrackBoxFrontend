@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { API_BASE_URL, ACCESS_TOKEN_NAME } from '../../constants/apiConstants';
 import Cookies from 'universal-cookie';
+import { deleteSongPost } from '../../utils/network.js';
 
 const Song = (props) => {
 
@@ -11,19 +12,6 @@ const Song = (props) => {
         if (cookies.get('songID') === props.songID) {
             props.updateCurrentSong(undefined, undefined);
         }
-    }
-
-    const deleteSongPost = async (playlistID, songID) => {
-        return axios.post(API_BASE_URL + '/media/deleteSong', { playlistID: playlistID, songID: songID }, { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME) } })
-            .then(function (response) {
-                if (response.status === 200) {
-                    return response.data.affected;
-                }
-            }
-            )
-            .catch(function (error) {
-                console.log(error);
-            })
     }
 
     const handleOnClick = () => {

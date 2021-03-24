@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
 import Cookies from 'universal-cookie';
-import axios from 'axios';
 
 import UploadDialog from '../Dialogs/UploadDialog';
 import Song from './Song';
-import { API_BASE_URL, ACCESS_TOKEN_NAME } from '../../constants/apiConstants';
+import { addSongPost, deletePlaylistPost } from '../../utils/network.js';
 
 
 const Playlist = (props) => {
@@ -50,37 +49,6 @@ const Playlist = (props) => {
             </Accordion.Collapse>
         )
     });
-
-    const addSongPost = async (playlistName, playlistID, songName, selectedFile) => {
-
-        const data = new FormData()
-        data.append('playlistName', playlistName);
-        data.append('playlistID', playlistID);
-        data.append('songName', songName);
-        data.append('track', selectedFile);
-
-        return axios.post(API_BASE_URL + '/media/addSong', data, { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME) } })
-            .then(function (response) {
-                if (response.status === 200) {
-                    return response.data.affected;
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
-    }
-
-    const deletePlaylistPost = async (playlistID) => {
-        return axios.post(API_BASE_URL + '/media/deletePlaylist', { playlistID: playlistID }, { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME) } })
-            .then(function (response) {
-                if (response.status === 200) {
-                    return response.data.affected;
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
-    }
 
     return (
         <>
