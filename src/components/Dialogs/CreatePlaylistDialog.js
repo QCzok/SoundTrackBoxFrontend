@@ -1,48 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-class CreatePlaylistDialog extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            open: false,
-            playlistName: "",
-        };
-        this.handleDialogOpen = this.handleDialogOpen.bind(this);
-        this.handleDialogClose = this.handleDialogClose.bind(this);
-        this.handleNameChange = this.handleNameChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+const CreatePlaylistDialog = (props) => {
+    const [open, setOpen] = useState(false);
+    const [playlistName, setPlaylistName] = useState("");
+
+    const handleDialogOpen = () => {
+        setOpen(true);
     }
 
-    handleDialogOpen() {
-        this.setState({ open: true })
+    const handleDialogClose = () => {
+        setOpen(false);
+        setPlaylistName("");
     }
 
-    handleDialogClose() {
-        this.setState({
-            open: false,
-            playlistName: "",
-        })
+    const handleSubmit = (event) => {
+        if (playlistName !== "") {
+            props.parentCallback(playlistName);
+            setOpen(false);
+            setPlaylistName("");
+        } else {
+            alert("Your didn't give your playlist any name");
+        }
     }
 
-    handleSubmit(event) {
-        this.props.parentCallback(this.state.playlistName);
-        this.setState({
-            playlistName: "",
-            open: false,
-        });
-        event.preventDefault();
+    const handleNameChange = (event) => {
+        setPlaylistName(event.target.value);
     }
 
-    handleNameChange(event) {
-        this.setState({ playlistName: event.target.value })
-    }
-
-    render() {
-        return (
-            <>
-                <button type="button" class="btn btn-outline-dark" onClick={this.handleDialogOpen}>
+    return (
+        <>
+            <button type="button" class="btn btn-outline-dark" onClick={handleDialogOpen}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="26"
@@ -54,11 +43,11 @@ class CreatePlaylistDialog extends React.Component {
                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                 </svg>
                 Add a new playlist
-                </button>
-                
-                <Modal show={this.state.open} onHide={this.handleDialogClose} animation={false}>
+            </button>
+
+            <Modal show={open} onHide={handleDialogClose} animation={false}>
                 <Modal.Header closeButton>
-                Add a playlist
+                    Add a playlist
                 </Modal.Header>
                 <Modal.Body>
                     <form>
@@ -69,23 +58,22 @@ class CreatePlaylistDialog extends React.Component {
                                 id="playlist"
                                 aria-describedby="playlist"
                                 placeholder="Enter playlist name"
-                                value={this.state.playlistName}
-                                onChange={this.handleNameChange}
+                                value={playlistName}
+                                onChange={handleNameChange}
                             />
                         </div>
                     </form>
                 </Modal.Body>
                 <Modal.Footer>
-                <Button
+                    <Button
                         type="submit"
                         className="btn btn-primary"
-                        onClick={this.handleSubmit}
+                        onClick={handleSubmit}
                     >Submit</Button>
                 </Modal.Footer>
             </Modal>
-            </>
-        )
-    }
+        </>
+    )
 }
 
 export default CreatePlaylistDialog;

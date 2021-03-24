@@ -1,103 +1,83 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 
-import axios from 'axios';
-import { API_BASE_URL, ACCESS_TOKEN_NAME } from '../../constants/apiConstants';
+const UploadDialog = (props) => {
+  const [open, setOpen] = useState(false);
+  const [songName, setSongName] = useState("");
+  const [songUrl, setSongUrl] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
 
-class UploadDialog extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      open: false,
-      songName: '',
-      songUrl: '',
-      selectedFile: null,
-    };
-    this.handleNameChange = this.handleNameChange.bind(this);
-    this.handleUrlChange = this.handleUrlChange.bind(this);
-    this.handleDialogOpen = this.handleDialogOpen.bind(this);
-    this.handleDialogClose = this.handleDialogClose.bind(this);
-    this.handleDialogSubmit = this.handleDialogSubmit.bind(this);
+  const handleNameChange = (event) => {
+    setSongName(event.target.value)
+  };
+
+  const handleUrlChange = (event) => {
+    setSongUrl(event.target.value);
+  };
+
+  const handleDialogOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setOpen(false);
+    setSongName("");
+    setSongUrl("");
+  };
+
+  const handleDialogSubmit = () => {
+    if (songName !== "") {
+      props.parentCallback(songName, selectedFile);
+      setOpen(false);
+      setSongName("");
+      setSongUrl("");
+    } else {
+      alert("You didn't give your song any name");
+    }
+  };
+
+  const onFileUpload = (event) => {
+    setSelectedFile(event.target.files[0]);
   }
 
-  handleNameChange(event) {
-    this.setState({ songName: event.target.value });
-  };
+  return (
+    <React.Fragment>
+      <a className="dropdown-item" onClick={handleDialogOpen}>Add a song</a>
 
-  handleUrlChange(event) {
-    this.setState({ songUrl: event.target.value });
-  };
-
-  handleDialogOpen = () => {
-    this.setState({ open: true });
-  };
-
-  handleDialogClose = () => {
-    this.setState({
-      open: false,
-      songName: '',
-      songUrl: ''
-    });
-  };
-
-  handleDialogSubmit = () => {
-    this.props.parentCallback(this.state.songName, this.state.selectedFile);
-
-    this.setState({
-      open: false,
-      songName: '',
-      songUrl: ''
-    });
-  };
-
-  onFileUpload = (event) => {
-    this.setState({
-      selectedFile: event.target.files[0]
-    })
-  }
-
-
-  render() {
-    return (
-      <React.Fragment>
-        <a className="dropdown-item" onClick={this.handleDialogOpen}>Add a song</a>
-
-
-        <Modal show={this.state.open} onHide={this.handleDialogClose} animation={false}>
-          <Modal.Header closeButton>
-            Upload a Song
-                </Modal.Header>
-          <Modal.Body>
-            <form>
-              <Form.Group>
-                <Form.File onChange={this.onFileUpload} />
-              </Form.Group>
-              <div className="form-group text-left">
-                <label >Song name</label>
-                <input type="song-name"
-                  className="form-control"
-                  id="playlist"
-                  aria-describedby="song name"
-                  placeholder="Enter a song name"
-                  value={this.state.songName}
-                  onChange={this.handleNameChange}
-                />
-              </div>
-            </form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              type="submit"
-              className="btn btn-primary"
-              onClick={this.handleDialogSubmit}
-            >Submit</Button>
-          </Modal.Footer>
-        </Modal>
-      </React.Fragment>
-    );
-  }
+      <Modal show={open} onHide={handleDialogClose} animation={false}>
+        <Modal.Header closeButton>
+          Upload a Song
+        </Modal.Header>
+        <Modal.Body>
+          <form>
+            <Form.Group>
+              <Form.File onChange={onFileUpload} />
+            </Form.Group>
+            <div className="form-group text-left">
+              <label >Song name</label>
+              <input type="song-name"
+                className="form-control"
+                id="playlist"
+                aria-describedby="song name"
+                placeholder="Enter a song name"
+                value={songName}
+                onChange={handleNameChange}
+              />
+            </div>
+          </form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            type="submit"
+            className="btn btn-primary"
+            onClick={handleDialogSubmit}
+          >Submit</Button>
+        </Modal.Footer>
+      </Modal>
+    </React.Fragment>
+  );
 }
 
 export default UploadDialog
