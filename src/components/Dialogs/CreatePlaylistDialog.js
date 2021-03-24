@@ -1,5 +1,4 @@
 import React from 'react';
-import './CreatePlaylistDialog.css'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
@@ -43,7 +42,7 @@ class CreatePlaylistDialog extends React.Component {
     render() {
         return (
             <>
-                <button type="button" class="btn btn-outline-dark flex-grow-1" onClick={this.handleDialogOpen}>
+                <button type="button" class="btn btn-outline-dark" onClick={this.handleDialogOpen}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="26"

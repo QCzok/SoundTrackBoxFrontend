@@ -71,6 +71,9 @@ class UploadDialog extends React.Component {
                 </Modal.Header>
           <Modal.Body>
             <form>
+              <Form.Group>
+                <Form.File onChange={this.onFileUpload} />
+              </Form.Group>
               <div className="form-group text-left">
                 <label >Song name</label>
                 <input type="song-name"
@@ -82,9 +85,6 @@ class UploadDialog extends React.Component {
                   onChange={this.handleNameChange}
                 />
               </div>
-              <Form.Group>
-                <Form.File id="exampleFormControlFile1" label="Example file input" onChange={this.onFileUpload} />
-              </Form.Group>
             </form>
           </Modal.Body>
           <Modal.Footer>

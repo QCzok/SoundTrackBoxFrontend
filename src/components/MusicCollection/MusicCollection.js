@@ -1,46 +1,32 @@
-import React from 'react';
-import './MusicCollection.scss';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+
 import Playlist from './Playlist';
+import CreatePlaylistDialog from '../Dialogs/CreatePlaylistDialog'
 import { API_BASE_URL, ACCESS_TOKEN_NAME } from '../../constants/apiConstants';
 
-import CreatePlaylistDialog from '../Dialogs/CreatePlaylistDialog'
 
-class MusicCollection extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            user: { musicCollection: [] },
-        }
-        this.onChangePlaylists = this.onChangePlaylists.bind(this);
-        this.addPlaylistPost = this.addPlaylistPost.bind(this);
-        this.onSongChange = this.onSongChange.bind(this);
-    }
+const MusicCollection = (props) => {
+    const [user, setUser] = useState({ musicCollection: [] });
 
-    componentDidMount() {
-        Promise.resolve(this.loadMusicCollectionGet()).then((user) => {
-            this.setState({
-                user: user
-            });
+    useEffect(() => {
+        Promise.resolve(loadMusicCollectionGet()).then((user) => {
+            setUser(user);
         })
-    }
+    }, []);
 
-    onChangePlaylists(playlistName) {
+    const onChangePlaylists = (playlistName) => {
         Promise.resolve()
-            .then(this.addPlaylistPost(playlistName).then(result => {
-                this.setState({
-                    user: result
-                });
+            .then(addPlaylistPost(playlistName).then(user => {
+                setUser(user);
             }));
     }
 
-    onSongChange(result) {
-        this.setState({
-            user: result
-        });
+    const onSongChange = (user) => {
+        setUser(user);
     }
 
-    listOfPlaylists = (user) => {
+    const listOfPlaylists = (user) => {
         return user['musicCollection'].map((playlist) => {
             return (
                 <div key={playlist._id} className="col-md-12">
@@ -48,8 +34,8 @@ class MusicCollection extends React.Component {
                         playlistName={playlist.name}
                         playlistID={playlist._id}
                         songCollection={playlist.songList ? playlist.songList : []}
-                        parentCallback={this.onSongChange}
-                        updateCurrentSong={this.props.updateCurrentSong}
+                        parentCallback={onSongChange}
+                        updateCurrentSong={props.updateCurrentSong}
                     >
                     </Playlist>
                 </div>
@@ -57,7 +43,7 @@ class MusicCollection extends React.Component {
         })
     }
 
-    async addPlaylistPost(playlistName) {
+    const addPlaylistPost = async (playlistName) => {
         return axios.post(API_BASE_URL + '/media/addPlaylist', { name: playlistName }, { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME) } })
             .then(function (response) {
                 if (response.status === 200) {
@@ -69,7 +55,7 @@ class MusicCollection extends React.Component {
             });
     }
 
-    async loadMusicCollectionGet() {
+    const loadMusicCollectionGet = async () => {
         var data = axios.get(API_BASE_URL + '/media/loadMusicCollection', { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME) } })
             .then(res => { return res.data }).catch(function (error) {
                 console.log(error);
@@ -77,17 +63,12 @@ class MusicCollection extends React.Component {
         return data;
     }
 
-    render() {
-
-        return (
-            <div className="row">
-                <CreatePlaylistDialog parentCallback={this.onChangePlaylists} />
-                {
-                    this.listOfPlaylists(this.state.user)
-                }
-            </div>
-        )
-    }
+    return (
+        <section className="flex-fill">
+            <CreatePlaylistDialog parentCallback={onChangePlaylists} />
+            { listOfPlaylists(user) }
+        </section>
+    )
 }
 
 export default MusicCollection;

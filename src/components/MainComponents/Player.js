@@ -49,7 +49,7 @@ class Player extends React.Component {
             this.analyserNode.getFloatFrequencyData(this.dataArray);
 
             //Draw black background
-            this.canvasCtx.fillStyle = 'rgb(255, 255, 255)';
+            this.canvasCtx.fillStyle = 'Gainsboro';
             this.canvasCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
             //Draw spectrum
@@ -57,7 +57,7 @@ class Player extends React.Component {
             let posX = 0;
             for (let i = 0; i < this.bufferLength; i++) {
                 const barHeight = (this.dataArray[i] + 140) * 2;
-                this.canvasCtx.fillStyle = 'rgb(52 , 58, 74)';
+                this.canvasCtx.fillStyle = 'chocolate';
                 this.canvasCtx.fillRect(posX, this.canvas.height - barHeight / 2, barWidth, barHeight / 2);
                 posX += barWidth + 1;
             }
@@ -67,7 +67,7 @@ class Player extends React.Component {
 
     render() {
         return (
-            <div class="card row flex-fill">
+            <div class="card flex-fill">
                 <canvas id="visualizer" />
                     <h5 class="card-title">{this.props.currentSongName}</h5>
                     <audio

@@ -1,25 +1,19 @@
 import React from 'react';
-import './Song.css';
 import axios from 'axios';
 import { API_BASE_URL, ACCESS_TOKEN_NAME } from '../../constants/apiConstants';
 import Cookies from 'universal-cookie';
 
-class Song extends React.Component {
-    constructor(props) {
-        super(props);
-        this.deleteSong = this.deleteSong.bind(this);
-        this.handleOnClick = this.handleOnClick.bind(this);
-    }
+const Song = (props) => {
 
-    deleteSong() {
+    const deleteSong = () => {
         const cookies = new Cookies();
-        Promise.resolve(this.deleteSongPost(this.props.playlistID, this.props.songID)).then((result) => this.props.parentCallback(result));
-        if (cookies.get('songID') === this.props.songID) {
-            this.props.updateCurrentSong(undefined, undefined);
+        Promise.resolve(deleteSongPost(props.playlistID, props.songID)).then((result) => props.parentCallback(result));
+        if (cookies.get('songID') === props.songID) {
+            props.updateCurrentSong(undefined, undefined);
         }
     }
 
-    async deleteSongPost(playlistID, songID) {
+    const deleteSongPost = async (playlistID, songID) => {
         return axios.post(API_BASE_URL + '/media/deleteSong', { playlistID: playlistID, songID: songID }, { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME) } })
             .then(function (response) {
                 if (response.status === 200) {
@@ -32,11 +26,10 @@ class Song extends React.Component {
             })
     }
 
-    handleOnClick() {
-        this.props.updateCurrentSong(this.props.songName, this.props.songID)
+    const handleOnClick = () => {
+        props.updateCurrentSong(props.songName, props.songID)
     }
 
-    render() {
         return (
             <div className="row bg-light">
                 <div id="delete-song" className="nav-item dropdown">
@@ -49,13 +42,12 @@ class Song extends React.Component {
                         </svg>
                     </a>
                     <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a className="dropdown-item" onClick={this.deleteSong}>Delete this song</a>
+                        <a className="dropdown-item" onClick={deleteSong}>Delete this song</a>
                     </div>
                 </div>
-                <button className="btn flex-fill" onClick={this.handleOnClick}>{this.props.songName}</button>
+                <button className="btn flex-fill" onClick={handleOnClick}>{props.songName}</button>
             </div>
         );
-    }
 }
 
 export default Song;
