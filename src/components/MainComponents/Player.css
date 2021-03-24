@@ -1,6 +1,5 @@
 .player{
     background-color: #343a40;
-    box-sizing: border-box;
     border-style: solid;
     border-radius: 5px;
 }
@@ -14,9 +13,6 @@ audio {
 #caption{
     color: rgb(223, 145, 0);
     font-size: x-large;
-    font-family: 'Helvetica Neue';
-    font-weight: bold; 
-    letter-spacing: -1px; 
     text-align: center;
     margin: 10px 20px;
 }

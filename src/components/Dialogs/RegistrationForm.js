@@ -57,7 +57,7 @@ function RegistrationForm(props) {
                     if (response.status === 200) {
                         setState(prevState => ({
                             ...prevState,
-                            'successMessage': "You have successfully registered. Please check your mail and verify your account.",
+                            'successMessage': "You have successfully registered. We just sent you a confirmation email. Check your email account to finish the registration process and access your free trial period. If you don't receive it in a few minutes, check your spam folder.",
                             'errorMessage': null,
                         }))
                     } else {

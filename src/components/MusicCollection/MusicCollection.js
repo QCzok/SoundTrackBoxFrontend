@@ -1,5 +1,5 @@
 import React from 'react';
-import './MusicCollection.css';
+import './MusicCollection.scss';
 import axios from 'axios';
 import Playlist from './Playlist';
 import { API_BASE_URL, ACCESS_TOKEN_NAME } from '../../constants/apiConstants';
@@ -10,31 +10,51 @@ class MusicCollection extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            playlistCollection: null,
+            user: { musicCollection: [] },
         }
         this.onChangePlaylists = this.onChangePlaylists.bind(this);
-        this.reloadCollection = this.reloadCollection.bind(this);
         this.addPlaylistPost = this.addPlaylistPost.bind(this);
         this.onSongChange = this.onSongChange.bind(this);
     }
 
     componentDidMount() {
-        this.reloadCollection();
+        Promise.resolve(this.loadMusicCollectionGet()).then((user) => {
+            this.setState({
+                user: user
+            });
+        })
     }
 
     onChangePlaylists(playlistName) {
         Promise.resolve()
             .then(this.addPlaylistPost(playlistName).then(result => {
                 this.setState({
-                    playlistCollection: result
+                    user: result
                 });
             }));
     }
 
     onSongChange(result) {
         this.setState({
-            playlistCollection: result
+            user: result
         });
+    }
+
+    listOfPlaylists = (user) => {
+        return user['musicCollection'].map((playlist) => {
+            return (
+                <div key={playlist._id} className="col-md-12">
+                    <Playlist
+                        playlistName={playlist.name}
+                        playlistID={playlist._id}
+                        songCollection={playlist.songList ? playlist.songList : []}
+                        parentCallback={this.onSongChange}
+                        updateCurrentSong={this.props.updateCurrentSong}
+                    >
+                    </Playlist>
+                </div>
+            )
+        })
     }
 
     async addPlaylistPost(playlistName) {
@@ -57,48 +77,16 @@ class MusicCollection extends React.Component {
         return data;
     }
 
-    reloadCollection() {
-        Promise.resolve(this.loadMusicCollectionGet()).then((collection) => {
-            this.setState({
-                playlistCollection: collection
-            });
-        })
-    }
-
     render() {
-        if (this.state.playlistCollection) {
-            return (
-                <section className='library'>
-                        <CreatePlaylistDialog parentCallback={this.onChangePlaylists} />
-                        <ul className="list-group collection">
-                            {
-                                this.state.playlistCollection['musicCollection'].map((playlist, index) => {
-                                    return (
-                                        <li id="frame" className="list-group-item" key={index}>
-                                            <Playlist
-                                                playlistName={playlist.name}
-                                                playlistID={playlist._id}
-                                                songCollection={playlist.songList ? playlist.songList : []}
-                                                parentCallback={this.onSongChange}
-                                                updateCurrentSong={this.props.updateCurrentSong}
-                                            >
-                                            </Playlist>
-                                        </li>
-                                    )
-                                })}
 
-                        </ul>
-                </section>
-            )
-        } else {
-            return (
-                <div className="d-flex justify-content-center">
-                    <div className="spinner-border" role="status">
-                        <span className="sr-only">Loading...</span>
-                    </div>
-                </div>
-            )
-        }
+        return (
+            <div className="row">
+                <CreatePlaylistDialog parentCallback={this.onChangePlaylists} />
+                {
+                    this.listOfPlaylists(this.state.user)
+                }
+            </div>
+        )
     }
 }
 

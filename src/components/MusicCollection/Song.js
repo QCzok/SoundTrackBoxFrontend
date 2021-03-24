@@ -2,7 +2,6 @@ import React from 'react';
 import './Song.css';
 import axios from 'axios';
 import { API_BASE_URL, ACCESS_TOKEN_NAME } from '../../constants/apiConstants';
-import Button from 'react-bootstrap/Button';
 import Cookies from 'universal-cookie';
 
 class Song extends React.Component {
@@ -13,11 +12,15 @@ class Song extends React.Component {
     }
 
     deleteSong() {
-        Promise.resolve(this.deleteSongPost(this.props.playlistName, this.props.songName, this.props.songID)).then((result) => this.props.parentCallback(result));
+        const cookies = new Cookies();
+        Promise.resolve(this.deleteSongPost(this.props.playlistID, this.props.songID)).then((result) => this.props.parentCallback(result));
+        if (cookies.get('songID') === this.props.songID) {
+            this.props.updateCurrentSong(undefined, undefined);
+        }
     }
 
-    async deleteSongPost(playlistName, songName, songID) {
-        return axios.post(API_BASE_URL + '/media/deleteSong', { playlistName: playlistName, songName: songName, songID: songID }, { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME) } })
+    async deleteSongPost(playlistID, songID) {
+        return axios.post(API_BASE_URL + '/media/deleteSong', { playlistID: playlistID, songID: songID }, { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME) } })
             .then(function (response) {
                 if (response.status === 200) {
                     return response.data.affected;
@@ -35,11 +38,9 @@ class Song extends React.Component {
 
     render() {
         return (
-            <section id="song-frame">
+            <div className="row bg-light">
                 <div id="delete-song" className="nav-item dropdown">
-                    <a className="nav-link dropdown-toggle"
-                        href="#"
-                        id="navbarDropdownMenuLink"
+                    <a className="dropdown-toggle"
                         data-toggle="dropdown"
                         aria-haspopup="true"
                         aria-expanded="false">
@@ -51,8 +52,8 @@ class Song extends React.Component {
                         <a className="dropdown-item" onClick={this.deleteSong}>Delete this song</a>
                     </div>
                 </div>
-                <Button id="song-item" onClick={this.handleOnClick}>{this.props.songName}</Button>
-            </section>
+                <button className="btn flex-fill" onClick={this.handleOnClick}>{this.props.songName}</button>
+            </div>
         );
     }
 }

@@ -1,8 +1,8 @@
 import React from 'react';
 import './Playlist.css'
 import Accordion from 'react-bootstrap/Accordion';
-import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import Cookies from 'universal-cookie';
 
 import UploadDialog from '../Dialogs/UploadDialog';
 import Song from './Song';
@@ -21,6 +21,49 @@ class Playlist extends React.Component {
         this.deletePlaylist = this.deletePlaylist.bind(this);
     }
 
+    handleUpload(songName, selectedFile) {
+        this.setState({
+            fetchInProgress: true
+        });
+        Promise.resolve(this.addSongPost(this.props.playlistName, this.props.playlistID, songName, selectedFile))
+            .then((result) => this.props.parentCallback(result))
+            .then(() => {
+                this.setState({
+                    fetchInProgress: false
+                })
+            });
+    }
+
+    deletePlaylist() {
+        const cookies = new Cookies();
+        Promise.resolve(this.deletePlaylistPost(this.props.playlistID)).then((result) => {
+            this.props.songCollection.map((song) => {
+                if (song._id === cookies.get('songID')) {
+                    this.props.updateCurrentSong(undefined, undefined);
+                }
+            })
+            this.props.parentCallback(result)
+        });
+    }
+
+    songs = (songCollection) => songCollection.map((song) => {
+        return (
+            <Accordion.Collapse eventKey="0" key={song._id}>
+                <Song
+                    playlistID={this.props.playlistID}
+                    playlistName={this.props.playlistName}
+                    songName={song.songName}
+                    songID={song._id}
+                    parentCallback={this.props.parentCallback}
+                    updateCurrentSong={
+                        this.props.updateCurrentSong
+                    }
+                >
+                </Song>
+            </Accordion.Collapse>
+        )
+    });
+
     async addSongPost(playlistName, playlistID, songName, selectedFile) {
 
         const data = new FormData()
@@ -29,111 +72,58 @@ class Playlist extends React.Component {
         data.append('songName', songName);
         data.append('track', selectedFile);
 
-
         return axios.post(API_BASE_URL + '/media/addSong', data, { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME) } })
             .then(function (response) {
                 if (response.status === 200) {
                     return response.data.affected;
                 }
-            }
-            )
+            })
             .catch(function (error) {
                 console.log(error);
             })
     }
 
-    async deletePlaylistPost(playlistName) {
-        return axios.post(API_BASE_URL + '/media/deletePlaylist', { playlistName: playlistName, songList: this.props.songCollection }, { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME) } })
+    async deletePlaylistPost(playlistID) {
+        return axios.post(API_BASE_URL + '/media/deletePlaylist', { playlistID: playlistID }, { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME) } })
             .then(function (response) {
                 if (response.status === 200) {
                     return response.data.affected;
                 }
-            }
-            )
+            })
             .catch(function (error) {
                 console.log(error);
             })
     }
 
-    handleUpload(songName, selectedFile) {
-        this.setState({
-            fetchInProgress: true
-        });
-        Promise.resolve(this.addSongPost(this.props.playlistName, this.props.playlistID, songName, selectedFile)).then((result) => this.props.parentCallback(result)).then(() => {
-            this.setState({
-                fetchInProgress: false
-            })
-        });
-    }
-
-
-    onSelect = (songID) => {
-        console.log('the song url is: ' + songID);
-    }
-
-    deletePlaylist() {
-        Promise.resolve(this.deletePlaylistPost(this.props.playlistName)).then((result) => {
-            console.log(result);
-
-            this.props.parentCallback(result)
-        }
-        );
-    }
-
     render() {
-        if (this.state.fetchInProgress) {
-            return (<div className="d-flex justify-content-center">
-                <div className="spinner-border" role="status">
-                    <span className="sr-only">Loading...</span>
-                </div>
-            </div>)
-        } else {
-            return (
-                <div>
-                    <Accordion>
-                        <div id="playlistBox" className="card-header">
-                            <div className="nav-item dropdown">
-                                <a className="nav-link dropdown-toggle"
-                                    href="#"
-                                    id="navbarDropdownMenuLink"
-                                    data-toggle="dropdown"
-                                    aria-haspopup="true"
-                                    aria-expanded="false">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-music-fill" viewBox="0 0 16 16">
-                                        <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm-.5 4.11v1.8l-2.5.5v5.09c0 .495-.301.883-.662 1.123C7.974 12.866 7.499 13 7 13c-.5 0-.974-.134-1.338-.377-.36-.24-.662-.628-.662-1.123s.301-.883.662-1.123C6.026 10.134 6.501 10 7 10c.356 0 .7.068 1 .196V4.41a1 1 0 0 1 .804-.98l1.5-.3a1 1 0 0 1 1.196.98z" />
-                                    </svg>
-                                </a>
-                                <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                    <UploadDialog id="add-song" parentCallback={this.handleUpload} />
-                                    <a className="dropdown-item" onClick={this.deletePlaylist}>Delete this playlist</a>
-                                </div>
-                            </div>
-                            <Accordion.Toggle id="playlistItem" as={Button} variant="link" eventKey="0">
-                                {this.props.playlistName}
-                            </Accordion.Toggle>
+        return (
+            <>
+                { this.state.fetchInProgress && (<div className="d-flex justify-content-center">
+                    <div className="spinner-border" role="status">
+                        <span className="sr-only">Loading...</span>
+                    </div>
+                </div>)}
+                {!this.state.fetchInProgress && (<Accordion>
+                    <div className="row">
+                        <a className="dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-collection-play-fill" viewBox="0 0 16 16">
+                                <path d="M2.5 3.5a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-11zm2-2a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1h-7zM0 13a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V6a1.5 1.5 0 0 0-1.5-1.5h-13A1.5 1.5 0 0 0 0 6v7zm6.258-6.437a.5.5 0 0 1 .507.013l4 2.5a.5.5 0 0 1 0 .848l-4 2.5A.5.5 0 0 1 6 12V7a.5.5 0 0 1 .258-.437z" />
+                            </svg>
+                        </a>
+                        <div className="dropdown-menu">
+                            <UploadDialog id="add-song" parentCallback={this.handleUpload} />
+                            <a className="dropdown-item" onClick={this.deletePlaylist}>Delete this playlist</a>
                         </div>
-                        {this.props.songCollection.map((song, index) => {
-                            return (
-                                <Accordion.Collapse eventKey="0" key={index}>
-                                    <Card key={index}>
-                                        <Song
-                                            playlistName={this.props.playlistName}
-                                            songName={song.songName}
-                                            songID={song._id}
-                                            parentCallback={this.props.parentCallback}
-                                            updateCurrentSong={
-                                                this.props.updateCurrentSong
-                                            }
-                                        >
-                                        </Song>
-                                    </Card>
-                                </Accordion.Collapse>
-                            )
-                        })}
-                    </Accordion>
-                </div>
-            )
-        }
+                        <Accordion.Toggle className="btn btn-dark flex-grow-1" as={Button} eventKey="0">
+                            {this.props.playlistName}
+                        </Accordion.Toggle>
+                    </div>
+                    {this.songs(this.props.songCollection)}
+                </Accordion>)}
+            </>
+        )
     }
 }
 
