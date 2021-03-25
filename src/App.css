@@ -1,3 +1,18 @@
-.MediaPlayer{
-    overflow: visible;
+h5 {
+    color:darkorange;
+    text-align: center;
+}
+
+#box {
+    max-width: 500px;
+}
+
+#library {
+    background-color: Gainsboro;
+    max-height: 400px;
+    overflow: auto;
+}
+
+#player {
+    background-color: Gainsboro;
 }

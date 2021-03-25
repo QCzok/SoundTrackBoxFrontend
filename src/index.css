@@ -10,3 +10,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#root {
+  background: rgb(36,15,0);
+  background: linear-gradient(90deg, rgba(36,15,0,1) 0%, rgba(255,130,0,1) 25%, rgba(240,222,199,1) 40%, rgba(240,222,199,1) 60%, rgba(255,130,0,1) 75%, rgba(36,15,0,1) 100%);
+}

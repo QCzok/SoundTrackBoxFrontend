@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-
-import axios from 'axios';
-import { API_BASE_URL, ACCESS_TOKEN_NAME } from '../../constants/apiConstants';
 import { withRouter } from "react-router-dom";
-
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+
+import { ACCESS_TOKEN_NAME } from '../../constants/apiConstants';
+import { loginPost } from '../../utils/network.js';
 
 function LoginForm(props) {
     const [state, setState] = useState({
@@ -23,36 +22,6 @@ function LoginForm(props) {
         }))
     }
 
-    const loginPost = async (payload) => {
-        return axios.post(API_BASE_URL + '/user/login', payload)
-            .then(response => {
-                if (response.status < 400) {
-                    setState(prevState => ({
-                        ...prevState,
-                        'successMessage': 'Login successful. Redirecting to home page..'
-                    }))
-                    localStorage.setItem(ACCESS_TOKEN_NAME, response.data);
-                    redirectToHome();
-                }
-                else {
-                    setState(prevState => ({
-                        ...prevState,
-                        'errorMessage': response.data,
-                    }))
-                }
-            })
-            .catch(error => {
-                if (!error.response) {
-                    alert('NETWORK ERROR');
-                } else {
-                    setState(prevState => ({
-                        ...prevState,
-                        'errorMessage': error.response.data
-                    }))
-                }
-            });
-    }
-
     const handleSubmitClick = (e) => {
         e.preventDefault();
         const payload = {
@@ -60,7 +29,33 @@ function LoginForm(props) {
             "password": state.password,
         }
 
-        Promise.resolve(loginPost(payload)).catch(error => console.log(error));
+        Promise.resolve(loginPost(payload))
+        .then((response) => {
+            if (response.status < 400) {
+                setState(prevState => ({
+                    ...prevState,
+                    'successMessage': 'Login successful. Redirecting to home page..'
+                }))
+                localStorage.setItem(ACCESS_TOKEN_NAME, response.data);
+                redirectToHome();
+            }
+            else {
+                setState(prevState => ({
+                    ...prevState,
+                    'errorMessage': response.data,
+                }))
+            }
+        })
+        .catch((error) => {
+            if (!error.response) {
+                alert('NETWORK ERROR');
+            } else {
+                setState(prevState => ({
+                    ...prevState,
+                    'errorMessage': error.response.data
+                }))
+            }
+        });
     }
 
     const redirectToHome = () => {

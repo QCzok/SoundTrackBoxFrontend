@@ -7,11 +7,11 @@ import {
 } from "react-router-dom";
 import CookieConsent from "react-cookie-consent";
 
-import Header from './components/MainComponents/Header';
+import Header from './components/Header';
 import LoginForm from './components/Dialogs/LoginForm';
 import RegistrationForm from './components/Dialogs/RegistrationForm';
-import MusicCollection from './components/MusicCollection/MusicCollection';
-import Player from './components/MainComponents/Player';
+import MusicCollection from './components/MusicCollection';
+import Player from './components/Player';
 import PrivateRoute from './utils/PrivateRoute';
 
 const App = () => {
@@ -32,7 +32,7 @@ const App = () => {
   }
 
   return (
-    <main className="container">
+    <main id = "box" className="container">
       <Router>
         <div className="row justify-content-md-center">
           <Header />

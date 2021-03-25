@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { API_BASE_URL } from '../../constants/apiConstants';
-import axios from 'axios';
 import { withRouter } from "react-router-dom";
 import Modal from 'react-bootstrap/Modal';
+import { registrationToServerPost } from '../../utils/network.js';
 
-function RegistrationForm(props) {
+const RegistrationForm = (props) => {
     const [state, setState] = useState({
         email: "",
         password: "",
@@ -28,8 +27,8 @@ function RegistrationForm(props) {
                 'onSend': true,
             }));
             Promise.resolve()
-            .then(sendDetailsToServer)
-            .catch(error => console.log(error));
+                .then(sendDetailsToServer)
+                .catch(error => console.log(error));
         } else {
             setState(prevState => ({
                 ...prevState,
@@ -46,37 +45,28 @@ function RegistrationForm(props) {
         props.history.push('/login');
     }
 
-    const sendDetailsToServer = async () => {
+    const sendDetailsToServer = () => {
         if (state.email.length && state.password.length) {
             const payload = {
                 "email": state.email,
                 "password": state.password,
             }
-            axios.post(API_BASE_URL + '/user/register', payload)
-                .then(function (response) {
-                    if (response.status === 200) {
-                        setState(prevState => ({
-                            ...prevState,
-                            'successMessage': "You have successfully registered. We just sent you a confirmation email. Check your email account to finish the registration process and access your free trial period. If you don't receive it in a few minutes, check your spam folder.",
-                            'errorMessage': null,
-                        }))
-                    } else {
-                        setState(prevState => ({
-                            ...prevState,
-                            'errorMessage': response.data,
-                            'successMessage': null,
-                            'onSend': false,
-                        }))
-                    }
-                })
-                .catch(function (error) {
+            Promise.resolve(registrationToServerPost(payload)).then((response) => {
+                if (response.isOk) {
                     setState(prevState => ({
                         ...prevState,
-                        'errorMessage': error.response.data,
-                        'successMessage': null,
-                        'onSend': false
+                        'successMessage': "You have successfully registered. We just sent you a confirmation email. Check your email account to finish the registration process and access your free trial period. If you don't receive it in a few minutes, check your spam folder.",
+                        'errorMessage': null,
                     }))
-                });
+                } else {
+                    setState(prevState => ({
+                        ...prevState,
+                        'errorMessage': response.message,
+                        'successMessage': null,
+                        'onSend': false,
+                    }))
+                }
+            })
         } else {
             setState(prevState => ({
                 ...prevState,
@@ -86,20 +76,16 @@ function RegistrationForm(props) {
         }
     }
 
-    const handleClose = () => {
-        redirectToHome();
-    }
-
     return (
         <div>
-            <Modal show={true} onHide={() => handleClose()} animation={false}>
+            <Modal show={true} onHide={redirectToHome} animation={false}>
                 <Modal.Header closeButton>
                     Register
                 </Modal.Header>
                 <Modal.Body>
                     <form>
                         <div className="form-group text-left">
-                            <label htmlFor="exampleInputEmail1">Email address</label>
+                            <label>Email address</label>
                             <input type="email"
                                 className="form-control"
                                 id="email"
@@ -108,10 +94,9 @@ function RegistrationForm(props) {
                                 value={state.email}
                                 onChange={handleChange}
                             />
-                            <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
                         </div>
                         <div className="form-group text-left">
-                            <label htmlFor="exampleInputPassword1">Password</label>
+                            <label>Password</label>
                             <input type="password"
                                 className="form-control"
                                 id="password"
@@ -121,7 +106,7 @@ function RegistrationForm(props) {
                             />
                         </div>
                         <div className="form-group text-left">
-                            <label htmlFor="exampleInputPassword1">Confirm Password</label>
+                            <label>Confirm Password</label>
                             <input type="password"
                                 className="form-control"
                                 id="confirmPassword"
@@ -134,7 +119,7 @@ function RegistrationForm(props) {
                             type="submit"
                             className="btn btn-primary"
                             onClick={handleSubmitClick}
-                            disabled={state.onSend ? "true" :""}
+                            disabled={state.onSend ? "true" : ""}
                         >
                             Register
                 </button>
@@ -143,7 +128,7 @@ function RegistrationForm(props) {
                 <Modal.Footer>
                     <div className="mt-2">
                         <span>Already have an account? </span>
-                        <button className="btn btn-primary" onClick={() => redirectToLogin()}>Login here</button>
+                        <button className="btn btn-primary" onClick={redirectToLogin}>Login here</button>
                     </div>
                     <section class={state.errorMessage ? "alert alert-danger" : ""} role="alert">
                         {state.errorMessage}
