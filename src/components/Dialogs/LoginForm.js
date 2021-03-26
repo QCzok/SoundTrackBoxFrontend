@@ -70,7 +70,7 @@ function LoginForm(props) {
                 Login
                 </Modal.Header>
             <Modal.Body>
-                <form>
+                <form onSubmit={handleSubmitClick}>
                     <div className="form-group text-left">
                         <label >Email address</label>
                         <input type="email"

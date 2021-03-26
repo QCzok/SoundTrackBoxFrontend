@@ -16,6 +16,7 @@ const CreatePlaylistDialog = (props) => {
     }
 
     const handleSubmit = (event) => {
+        event.preventDefault();
         if (playlistName !== "") {
             props.parentCallback(playlistName);
             setOpen(false);
@@ -50,7 +51,7 @@ const CreatePlaylistDialog = (props) => {
                     Add a playlist
                 </Modal.Header>
                 <Modal.Body>
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <div className="form-group text-left">
                             <label >Playlist</label>
                             <input type="playlist"

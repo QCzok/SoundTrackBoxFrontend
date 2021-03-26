@@ -21,7 +21,8 @@ const UploadDialog = (props) => {
     setSongName("");
   };
 
-  const handleDialogSubmit = () => {
+  const handleDialogSubmit = (event) => {
+    event.preventDefault();
     if (songName !== "") {
       props.parentCallback(songName, selectedFile);
       setOpen(false);
@@ -44,9 +45,9 @@ const UploadDialog = (props) => {
           Upload a Song
         </Modal.Header>
         <Modal.Body>
-          <form>
+          <form onSubmit={handleDialogSubmit}>
             <Form.Group>
-              <Form.File onChange={onFileUpload} />
+              <Form.File onChange={onFileUpload} accept=".mp3,audio/*" />
             </Form.Group>
             <div className="form-group text-left">
               <label >Song name</label>
