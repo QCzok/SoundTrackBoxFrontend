@@ -66,6 +66,10 @@ class Player extends React.Component {
     }
 
     render() {
+        {this.props.currentSongID ? 
+        this.src = API_BASE_URL + '/media/getSongFile?songID=' + this.props.currentSongID :
+        this.src = "https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3"
+        }
         return (
             <div id = "player" class="card flex-fill">
                 <canvas id="visualizer" />
@@ -74,7 +78,7 @@ class Player extends React.Component {
                         id="track"
                         controls
                         crossorigin="anonymous"
-                        src={API_BASE_URL + '/media/getSongFile?songID=' + this.props.currentSongID}>
+                        src={this.src}>
                         Your browser does not support the
                             <code>audio</code> element.
                          </audio>

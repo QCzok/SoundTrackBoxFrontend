@@ -1,10 +1,30 @@
+h1 {
+    color:rgb(77, 45, 45);
+    text-align: center;
+    padding: 10px;
+    margin: 10px;
+}
+
+p {
+    color:rgb(77, 45, 45);
+    text-align: center;
+    padding: 10px;
+    margin: 10px;
+}
+
+.my-button {
+    text-align: center;
+}
+
 h5 {
     color:darkorange;
     text-align: center;
 }
 
 #box {
-    max-width: 500px;
+    max-width: 700px;
+    min-height: 100vh;
+    background-color: lightgray;
 }
 
 #library {
