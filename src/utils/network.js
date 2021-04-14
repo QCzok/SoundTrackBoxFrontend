@@ -22,7 +22,7 @@ export const addSongPost = async (playlistName, playlistID, songName, selectedFi
 }
 
 export const deleteSongPost = async (playlistID, songID) => {
-    return axios.post(API_BASE_URL + '/media/deleteSong', { playlistID: playlistID, songID: songID }, { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME) } })
+    return axios.delete(API_BASE_URL + '/media/deleteSong', { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME), playlistID: playlistID, songID: songID } })
         .then(function (response) {
             if (response.status === 200) {
                 return response.data.affected;
@@ -47,7 +47,7 @@ export const addPlaylistPost = async (playlistName) => {
 }
 
 export const deletePlaylistPost = async (playlistID) => {
-    return axios.post(API_BASE_URL + '/media/deletePlaylist', { playlistID: playlistID }, { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME) } })
+    return axios.delete(API_BASE_URL + '/media/deletePlaylist', { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME), playlistID: playlistID } })
         .then(function (response) {
             if (response.status === 200) {
                 return response.data.affected;
@@ -88,4 +88,11 @@ export const loginPost = async (payload) => {
         .catch(error => {
             throw(error);
         });
+}
+
+export const deleteUser = async () => {
+    return axios.delete(API_BASE_URL + '/user/deleteUser', { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME) } })
+        .catch(function (error) {
+            console.log(error);
+        })
 }

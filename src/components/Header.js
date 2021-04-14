@@ -1,7 +1,6 @@
 import { withRouter } from "react-router-dom";
 import { ACCESS_TOKEN_NAME } from '../constants/apiConstants';
-import axios from 'axios';
-import { API_BASE_URL } from '../constants/apiConstants'
+import { deleteUser } from '../utils/network.js';
 import Cookies from 'universal-cookie';
 
 const Header = (props) => {
@@ -24,13 +23,6 @@ const Header = (props) => {
             window.location.reload();
         }
         );
-    }
-
-    const deleteUser = async () => {
-        return axios.post(API_BASE_URL + '/user/deleteUser', {}, { headers: { "auth-token": localStorage.getItem(ACCESS_TOKEN_NAME) } })
-            .catch(function (error) {
-                console.log(error);
-            })
     }
 
     return (
