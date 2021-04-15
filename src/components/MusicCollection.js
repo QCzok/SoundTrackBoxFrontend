@@ -26,20 +26,25 @@ const MusicCollection = (props) => {
     }
 
     const listOfPlaylists = (user) => {
-        return user['musicCollection'].map((playlist) => {
-            return (
-                <div key={playlist._id} className="col-md-12">
-                    <Playlist
-                        playlistName={playlist.name}
-                        playlistID={playlist._id}
-                        songCollection={playlist.songList ? playlist.songList : []}
-                        parentCallback={onSongChange}
-                        updateCurrentSong={props.updateCurrentSong}
-                    >
-                    </Playlist>
-                </div>
-            )
-        })
+        try {
+            return user['musicCollection'].map((playlist) => {
+                return (
+                    <div key={playlist._id} className="col-md-12">
+                        <Playlist
+                            playlistName={playlist.name}
+                            playlistID={playlist._id}
+                            songCollection={playlist.songList ? playlist.songList : []}
+                            parentCallback={onSongChange}
+                            updateCurrentSong={props.updateCurrentSong}
+                        >
+                        </Playlist>
+                    </div>
+                )
+            })
+        } catch (error) {
+            console.log(error);
+            return [];
+        }
     }
 
     return (
