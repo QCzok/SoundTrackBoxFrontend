@@ -51,11 +51,11 @@ function PrivateRoute(props) {
              <section>
              <h1>Welcome to Sound Track Box </h1>
              <p>If you already have an account, log in now</p>
-             <div class="d-flex justify-content-center">
+             <div className="d-flex justify-content-center">
              <button className="btn btn-primary align-center" onClick = {login}>Log in</button>
              </div>
              <p> if you don't have an account yet, register first</p>
-             <div class="d-flex justify-content-center">
+             <div className="d-flex justify-content-center">
              <button className="btn btn-primary" onClick = {register}>Register</button>
              </div>
              <br/>

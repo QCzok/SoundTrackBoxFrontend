@@ -130,10 +130,10 @@ const RegistrationForm = (props) => {
                         <span>Already have an account? </span>
                         <button className="btn btn-primary" onClick={redirectToLogin}>Login here</button>
                     </div>
-                    <section class={state.errorMessage ? "alert alert-danger" : ""} role="alert">
+                    <section className={state.errorMessage ? "alert alert-danger" : ""} role="alert">
                         {state.errorMessage}
                     </section>
-                    <section class={state.successMessage ? "alert alert-success" : ""} role="alert">
+                    <section className={state.successMessage ? "alert alert-success" : ""} role="alert">
                         {state.successMessage}
                     </section>
                 </Modal.Footer>

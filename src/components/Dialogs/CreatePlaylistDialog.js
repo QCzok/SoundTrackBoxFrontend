@@ -32,7 +32,7 @@ const CreatePlaylistDialog = (props) => {
 
     return (
         <>
-            <button type="button" class="btn btn-outline-dark" onClick={handleDialogOpen}>
+            <button type="button" className="btn btn-outline-dark" onClick={handleDialogOpen}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="26"

@@ -36,3 +36,11 @@ h5 {
 #player {
     background-color: Gainsboro;
 }
+
+#canvas{
+    min-height: 300px;
+}
+
+#novisualizer{
+    max-height:0;
+}

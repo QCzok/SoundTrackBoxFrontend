@@ -106,7 +106,7 @@ function LoginForm(props) {
                     <span>Dont have an account? </span>
                     <button className="btn btn-primary" onClick={() => redirectToRegister()}>Register</button>
                 </section>
-                <section class={state.errorMessage ? "alert alert-danger": ""} role="alert">
+                <section className={state.errorMessage ? "alert alert-danger": ""} role="alert">
                 {state.errorMessage}
                 </section>
             </Modal.Footer>
